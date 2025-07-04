@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar Farm Suitability Analysis</title>
+    <!-- Leaflet CSS for maps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <!-- Leaflet Draw CSS for drawing tools -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css"/>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Left Side Panel: Controls and Inputs -->
+    <div id="controls-panel" class="side-panel">
+        <h1 class="main-title"> Solar Farm Suitability Analyzer: A Geospatial Tool</h1>
+        <p class="subtitle">This advanced application leverages Google Earth Engine to provide detailed analysis of land suitability for solar farm development, integrating critical data on elevation, slope, and land use/land cover.</p>
+
+        <p id="instructions" class="instruction-text">Please select your preferred Area of Interest (AOI) method from the dropdown below to begin your analysis.</p>
+
+        <div class="panel-section">
+            <label for="aoiMethodSelect" class="section-label">Select AOI Method:</label>
+            <select id="aoiMethodSelect" class="app-select">
+                <option value="" disabled selected>-- Choose AOI Method --</option>
+                <option value="drawAoi">Draw AOI on Map</option>
+                <option value="defineBbox">Define Bounding Box</option>
+                <option value="resetAoi">Reset Analysis</option>
+            </select>
+        </div>
+
+        <!-- This div will be used for dynamically added bounding box inputs -->
+        <div id="dynamicInputContainer"></div>
+
+        <!-- Analyze button, initially hidden, shown when AOI is ready -->
+        <button id="analyzeButton" class="app-button" style="display: none;"> Analyze Selected Area</button>
+        
+        <!-- Results Panel Content (initially hidden, shown after analysis) -->
+        <div id="results-panel-content"> 
+             <div class="panel-section observations-section">
+                <h3 class="section-title"> Key Geospatial Observations 🌍</h3>
+                <p id="elevationRange" class="observation-item"> Elevation Range (Meters): -</p>
+                <p id="slopeRange" class="observation-item"> Slope Range (Degrees): -</p>
+                <p id="powerGeneration" class="observation-item"> Estimated Power Generation (MWh): -</p>
+                <p id="numPanels" class="observation-item"> Estimated Solar Panels Required: -</p>
+            </div>
+
+            <div class="panel-section chart-section">
+                <h3 class="section-title">Areas by Suitability (km²)</h3>
+                <div class="chart-container">
+                    <canvas id="lulcChart"></canvas> <!-- Height/width will be set by JS -->
+                </div>
+                <p id="chartStatus" class="status-message">Run analysis to visualize suitability distribution.</p>
+            </div>
+            
+            <div class="panel-section legend-section">
+                <h3 class="section-title">🗂 Map Legend</h3>
+                <div class="legend-items-container">
+                    <!-- Legend items for suitability classification -->
+                    <div class="legend-item"><span style="background-color:#52E929;"></span>Most Suitable</div>
+                    <div class="legend-item"><span style="background-color:#F5A742;"></span>Medium Suitable</div>
+                    <div class="legend-item"><span style="background-color:#AB2103;"></span>Less Suitable</div>
+                    <div class="legend-item"><span style="background-color:#FF0000;"></span>Not Suitable</div>
+                </div>
+            </div>
+
+            <div class="panel-section layer-control-section">
+                <h3 class="section-title">Map Layer Toggles</h3>
+                <!-- Checkboxes to toggle visibility of suitability and solar radiation layers -->
+                <div id="suitabilityLayerContainer" class="layer-control-item" style="display:none;">
+                    <input type="checkbox" id="toggleSuitabilityLayer" checked>
+                    <label for="toggleSuitabilityLayer">Suitability Map</label>
+                </div>
+                <div id="solarLayerContainer" class="layer-control-item" style="display:none;">
+                    <input type="checkbox" id="toggleSolarLayer">
+                    <label for="toggleSolarLayer">Solar Radiation Map</label>
+                </div>
+            </div>
+        </div> <!-- End of results-panel-content -->
+
+    </div> <!-- End of controls-panel -->
+
+    <!-- Main Content Area: Map Display -->
+    <div id="map-container" class="map-container"></div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
